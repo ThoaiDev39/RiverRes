@@ -1,0 +1,29 @@
+{
+  "name": "web-manager-riverres",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node RiverRes/src/server.js",
+    "dev": "nodemon RiverRes/src/server.js"
+  },
+  "keywords": [
+    "node",
+    "js",
+    "+",
+    "react",
+    "+",
+    "mysql"
+  ],
+  "author": "thoaidev36",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.9"
+  }
+}
