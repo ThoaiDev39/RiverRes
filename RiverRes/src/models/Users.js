@@ -25,23 +25,33 @@ const User = sequelize.define('User', {
     allowNull: false,
   },
   role: {
+    type: DataTypes.ENUM('user', 'admin'),  // ENUM giúp hạn chế giá trị nhập vào
+    defaultValue: 'user',
+  },
+  birth: {
+    type: DataTypes.DATEONLY, // Dùng DATEONLY thay vì STRING
+    allowNull: true,
+  },
+  gender: {
+    type: DataTypes.ENUM('male', 'female', 'other'),
+    allowNull: true,
+  },
+  phone: {
     type: DataTypes.STRING,
-    defaultValue: 'user',  // Mặc định là 'user'
+    allowNull: true,
     validate: {
-      isIn: [['user', 'admin']],  // Chỉ có thể là 'user' hoặc 'admin'
-    }
+      isNumeric: true, // Đảm bảo chỉ chứa số
+    },
   },
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
+  address: {
+    type: DataTypes.STRING,
+    allowNull: true,
   }
 }, {
-  tableName: 'Users', // Đặt tên bảng là 'users'
-  timestamps: false, // Tắt tự động thêm createdAt và updatedAt
+  tableName: 'Users', // Đặt tên bảng là 'Users'
+  timestamps: true, // Tự động tạo createdAt và updatedAt
+  createdAt: 'created_at', // Đổi tên mặc định của createdAt
+  updatedAt: 'updated_at', // Đổi tên mặc định của updatedAt
 });
 
 module.exports = User;

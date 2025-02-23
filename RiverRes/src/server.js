@@ -3,8 +3,11 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const configViewEngine = require('./config/viewEngine');
+
 const webRoutes = require('./routes/web');
-const apiRoutes = require('./routes/Auth'); // Import API routes
+const authRoutes = require('./routes/Auth'); // Import API routes
+const userRoutes = require('./routes/userRouter');
+
 const sequelize = require('./config/db'); // Kết nối database
 
 const app = express();
@@ -22,7 +25,8 @@ configViewEngine(app);
 
 // ✅ Định nghĩa routes
 app.use('/', webRoutes);
-app.use('/auth', apiRoutes); // API đăng nhập & đăng ký
+app.use('/auth', authRoutes); // API đăng nhập & đăng ký
+app.use('/api', userRoutes); // Định nghĩa API khách hàng
 
 // ✅ Kết nối database & khởi động server
 sequelize.authenticate()
