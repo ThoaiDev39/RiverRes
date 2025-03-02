@@ -7,7 +7,7 @@ const { authMiddleware, adminMiddleware } = require('../middleware/authMiddlewar
 const router = express.Router();
 
 // 📌 API Đăng ký (dành cho cả user và admin)
-router.post('/register', authMiddleware, async (req, res) => {
+router.post('/register', async (req, res) => {
     try {
         const { username, email, password, role } = req.body;
 
@@ -15,19 +15,14 @@ router.post('/register', authMiddleware, async (req, res) => {
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) return res.status(400).json({ message: 'Email đã tồn tại!' });
 
-        let userRole = 'user'; // Mặc định là user
+        let userRole = 'user'; // Mặc định tất cả tài khoản mới đều là user
 
-        // Nếu user cố tình đặt role là 'admin', từ chối yêu cầu
-        if (role === 'admin' && (!req.user || req.user.role !== 'admin')) {
-            return res.status(403).json({ message: 'Bạn không có quyền tạo tài khoản admin!' });
-        }
-
-        // Nếu admin gửi request với role cụ thể (user hoặc admin), hệ thống chấp nhận
-        if (req.user && req.user.role === 'admin' && role) {
-            if (!['user', 'admin'].includes(role)) {
-                return res.status(400).json({ message: 'Vai trò không hợp lệ! Chỉ có thể là "user" hoặc "admin".' });
+        // Chỉ admin mới có quyền tạo tài khoản với role là 'admin'
+        if (role === 'admin') {
+            if (!req.user || req.user.role !== 'admin') {
+                return res.status(403).json({ message: 'Bạn không có quyền tạo tài khoản admin!' });
             }
-            userRole = role; // Admin có thể tạo cả user và admin
+            userRole = 'admin';
         }
 
         // Hash mật khẩu
@@ -46,6 +41,7 @@ router.post('/register', authMiddleware, async (req, res) => {
         res.status(500).json({ message: 'Lỗi máy chủ!', error });
     }
 });
+
 
 
 // 📌 API Đăng nhập
