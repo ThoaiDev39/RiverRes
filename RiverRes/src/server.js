@@ -31,9 +31,9 @@ configViewEngine(app);
 app.use('/', webRoutes);
 app.use('/auth', authRoutes); // API đăng nhập & đăng ký
 app.use('/api', userRoutes); // Định nghĩa API khách hàng
-app.use("/api/menus", menuRoutes);
+app.use("/api/", menuRoutes);
 app.use("/api/dishes", dishRoutes);
-app.use("/api/halls", hallRoutes);
+app.use("/api", hallRoutes);
 app.use("/api/bookings", bookingRoutes);
 
 // ✅ Kết nối database & khởi động server
