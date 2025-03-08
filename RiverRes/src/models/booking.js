@@ -13,6 +13,26 @@ const Booking = sequelize.define("Booking", {
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    references: {
+      model: User,
+      key: "id",
+    },
+  },
+  hallId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Hall,
+      key: "id",
+    },
+  },
+  menuId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Menu,
+      key: "id",
+    },
   },
   eventDate: {
     type: DataTypes.DATEONLY, // Chỉ lưu ngày (yyyy-mm-dd)
