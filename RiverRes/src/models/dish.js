@@ -1,4 +1,3 @@
-// Hoàng Hà
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const Menu = require("./menu");
@@ -9,6 +8,14 @@ const Dish = sequelize.define("Dish", {
     autoIncrement: true,
     primaryKey: true,
   },
+  menuId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Menu,
+      key: "id",
+    },
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -17,7 +24,7 @@ const Dish = sequelize.define("Dish", {
     type: DataTypes.TEXT,
   },
   price: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.DECIMAL(10, 2), // Chính xác hơn FLOAT
     allowNull: false,
   },
   image: {
