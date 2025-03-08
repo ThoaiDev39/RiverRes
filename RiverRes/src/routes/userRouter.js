@@ -21,7 +21,40 @@ router.get('/users', authMiddleware, adminMiddleware, async (req, res) => {
         res.status(500).json({ message: 'Lỗi máy chủ!' });
     }
 });
+// Hoàng Hà edit and add
+router.get('/me', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id, {
+            attributes: ['id', 'role', 'email', 'username', 'birth', 'gender', 'phone', 'address']
+        });
 
+        if (!user) {
+            return res.status(404).json({ message: 'User không tồn tại!' });
+        }
+
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error('Lỗi lấy thông tin cá nhân:', error);
+        res.status(500).json({ message: 'Lỗi máy chủ!' });
+    }
+});
+// user tự cập nhật thông tin cá nhân
+router.put('/me', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id);
+        const { username, email, birth, gender, phone, address } = req.body;
+
+        //const user = await User.findByPk(id);
+        if (!user) return res.status(404).json({ message: 'User không tồn tại!' });
+
+        await user.update({ username, email, birth, gender, phone, address });
+
+        res.status(200).json({ message: 'Cập nhật thành công!', user });
+    } catch (error) {
+        console.error('Lỗi cập nhật user:', error);
+        res.status(500).json({ message: 'Lỗi máy chủ!' });
+    }
+});
 /**
  * 📌 API Lấy thông tin user theo ID (Chỉ Admin)
  * 🔐 Yêu cầu xác thực & quyền Admin
