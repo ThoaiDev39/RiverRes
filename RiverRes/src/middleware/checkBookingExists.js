@@ -1,4 +1,4 @@
-const Booking = require("../models/booking");
+const Booking = require("../models/event");
 
 const checkBookingExists = async (req, res, next) => {
   const { id } = req.params;

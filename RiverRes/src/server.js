@@ -10,7 +10,7 @@ const userRoutes = require('./routes/userRouter');
 const menuRoutes = require("./routes/menuRoutes");
 const dishRoutes = require("./routes/dishRoutes");
 const hallRoutes = require("./routes/hallRoutes");
-const bookingRoutes = require("./routes/bookingRoutes");
+const bookingRoutes = require("./routes/eventRoutes");
 
 const sequelize = require('./config/db'); // Kết nối database
 
