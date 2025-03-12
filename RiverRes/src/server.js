@@ -10,7 +10,7 @@ const userRoutes = require('./routes/userRouter');
 const menuRoutes = require("./routes/menuRoutes");
 const dishRoutes = require("./routes/dishRoutes");
 const hallRoutes = require("./routes/hallRoutes");
-const bookingRoutes = require("./routes/eventRoutes");
+const eventRoutes = require("./routes/eventRoutes");
 
 const sequelize = require('./config/db'); // Kết nối database
 
@@ -31,10 +31,10 @@ configViewEngine(app);
 app.use('/', webRoutes);
 app.use('/auth', authRoutes); // API đăng nhập & đăng ký
 app.use('/api', userRoutes); // Định nghĩa API khách hàng
-app.use("/api/", menuRoutes);
+app.use("/api/menu", menuRoutes);
 app.use("/api/dishes", dishRoutes);
-app.use("/api", hallRoutes);
-app.use("/api/bookings", bookingRoutes);
+app.use("/api/hall", hallRoutes);
+app.use("/api/event", eventRoutes);
 
 // ✅ Kết nối database & khởi động server
 sequelize.authenticate()
