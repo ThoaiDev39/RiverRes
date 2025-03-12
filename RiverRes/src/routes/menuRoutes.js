@@ -5,12 +5,12 @@ const Menu = require("../models/menu");
 const router = express.Router();
 
 /**
- * 📌 Lấy danh sách tất cả Menu
+ * 📌 API Lấy danh sách tất cả Menu
  */
-router.get("/menus", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const menus = await Menu.findAll();
-        res.status(200).json({ menus });
+        res.status(200).json(menus);
     } catch (error) {
         console.error("Lỗi lấy danh sách menu:", error);
         res.status(500).json({ message: "Lỗi máy chủ!" });
@@ -18,18 +18,14 @@ router.get("/menus", async (req, res) => {
 });
 
 /**
- * 📌 Lấy chi tiết một Menu theo ID
+ * 📌 API Lấy chi tiết một Menu theo ID
  */
-router.get("/menus/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
     try {
-        const { id } = req.params;
-        const menu = await Menu.findByPk(id);
+        const menu = await Menu.findByPk(req.params.id);
+        if (!menu) return res.status(404).json({ message: "Menu không tồn tại!" });
 
-        if (!menu) {
-            return res.status(404).json({ message: "Menu không tồn tại!" });
-        }
-
-        res.status(200).json({ menu });
+        res.status(200).json(menu);
     } catch (error) {
         console.error("Lỗi lấy menu:", error);
         res.status(500).json({ message: "Lỗi máy chủ!" });
@@ -37,13 +33,13 @@ router.get("/menus/:id", async (req, res) => {
 });
 
 /**
- * 📌 Thêm Menu (Chỉ Admin)
+ * 📌 API Thêm Menu (Chỉ Admin)
  */
-router.post("/menus", authMiddleware, adminMiddleware, async (req, res) => {
+router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const { name, description } = req.body;
 
-        if (!name) {
+        if (!name || name.trim() === "") {
             return res.status(400).json({ message: "Tên menu không được để trống!" });
         }
 
@@ -57,19 +53,20 @@ router.post("/menus", authMiddleware, adminMiddleware, async (req, res) => {
 });
 
 /**
- * 📌 Cập nhật thông tin Menu (Chỉ Admin)
+ * 📌 API Cập nhật thông tin Menu (Chỉ Admin)
  */
-router.put("/menus/:id", authMiddleware, adminMiddleware, async (req, res) => {
+router.put("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description } = req.body;
 
         const menu = await Menu.findByPk(id);
-        if (!menu) {
-            return res.status(404).json({ message: "Menu không tồn tại!" });
-        }
+        if (!menu) return res.status(404).json({ message: "Menu không tồn tại!" });
 
-        await menu.update({ name, description });
+        await menu.update({
+            name: name || menu.name,
+            description: description || menu.description,
+        });
 
         res.status(200).json({ message: "Cập nhật menu thành công!", menu });
     } catch (error) {
@@ -79,19 +76,14 @@ router.put("/menus/:id", authMiddleware, adminMiddleware, async (req, res) => {
 });
 
 /**
- * 📌 Xóa Menu (Chỉ Admin)
+ * 📌 API Xóa Menu (Chỉ Admin)
  */
-router.delete("/menus/:id", authMiddleware, adminMiddleware, async (req, res) => {
+router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const { id } = req.params;
-
-        const menu = await Menu.findByPk(id);
-        if (!menu) {
-            return res.status(404).json({ message: "Menu không tồn tại!" });
-        }
+        const menu = await Menu.findByPk(req.params.id);
+        if (!menu) return res.status(404).json({ message: "Menu không tồn tại!" });
 
         await menu.destroy();
-
         res.status(200).json({ message: "Xóa menu thành công!" });
     } catch (error) {
         console.error("Lỗi xóa menu:", error);
