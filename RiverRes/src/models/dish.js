@@ -1,13 +1,15 @@
-// Hoàng Hà
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
-const Menu = require("./menu");
 
 const Dish = sequelize.define("Dish", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
+  },
+  menuId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   name: {
     type: DataTypes.STRING,
@@ -17,16 +19,12 @@ const Dish = sequelize.define("Dish", {
     type: DataTypes.TEXT,
   },
   price: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.FLOAT, // 🔹 Dùng FLOAT nếu không cần độ chính xác cao
     allowNull: false,
   },
   image: {
-    type: DataTypes.STRING, // URL ảnh món ăn
+    type: DataTypes.STRING, // 🔹 URL ảnh món ăn
   },
 });
-
-// Thiết lập quan hệ: 1 Menu có nhiều Dish
-Menu.hasMany(Dish, { foreignKey: "menuId", onDelete: "CASCADE" });
-Dish.belongsTo(Menu, { foreignKey: "menuId" });
 
 module.exports = Dish;

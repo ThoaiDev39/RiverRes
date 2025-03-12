@@ -3,7 +3,7 @@ const sequelize = require('../config/db');
 const Dish = require('./dish');
 const Menu = require('./menu');
 const Hall = require('./hall');
-const Booking = require('./booking');
+const Event = require('./event');
 const User = require('./Users');
 
 const syncDatabase = async () => {
@@ -15,4 +15,4 @@ const syncDatabase = async () => {
     }
 };
 
-module.exports = { syncDatabase , Dish, Menu, Hall, Booking, User };
+module.exports = { syncDatabase , Dish, Menu, Hall, Event, User };
