@@ -19,9 +19,9 @@ router.get("/", authMiddleware, adminMiddleware, async (req, res) => {
 /**
  * 📌 Tạo sự kiện mới (Chỉ user đã đăng nhập)
  */
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { userId, eventDate, startTime, endTime, hallId, menuId, numberOfGuests } = req.body;
+    const { userId, eventDate, startTime, endTime, hallId, menuId, numberOfTables,numberOfGuests, totalPrice} = req.body;
 
     // Kiểm tra userId có khớp với user đang đăng nhập không
     if (req.user.role !== "admin" && req.user.id !== userId) {
@@ -48,7 +48,9 @@ router.post("/", authMiddleware, async (req, res) => {
     }
 
     // Tính tổng tiền: giá sảnh + (giá menu * số khách)
-    const totalPrice = hall.price + menu.price * numberOfGuests;
+    //const totalPrice = hall.price + menu.price * numberOfGuests;
+    //console.log(hall.price, menu.price);
+    
 
     // Tạo sự kiện
     const event = await Event.create({
@@ -58,6 +60,7 @@ router.post("/", authMiddleware, async (req, res) => {
       endTime,
       hallId,
       menuId,
+      numberOfTables, 
       numberOfGuests,
       totalPrice,
       status: "pending", // Mặc định trạng thái là "pending"
