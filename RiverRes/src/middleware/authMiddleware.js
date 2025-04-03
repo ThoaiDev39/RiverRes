@@ -9,7 +9,7 @@ const authMiddleware = async (req, res, next) => {
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
-        req.user = await User.findByPk(decoded.userId);
+        req.user = await User.findByPk(decoded.id);
 
         if (!req.user) {
             return res.status(401).json({ message: 'Người dùng không tồn tại!' });

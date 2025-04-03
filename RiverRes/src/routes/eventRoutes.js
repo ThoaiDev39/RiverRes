@@ -1,112 +1,129 @@
 const express = require("express");
-const { Event, Hall, Menu, User } = require("../models");
 const { authMiddleware, adminMiddleware } = require("../middleware/authMiddleware");
+const eventService = require("../services/EventService");
 
 const router = express.Router();
 
 /**
- * 📌 Lấy danh sách sự kiện (Admin mới xem được)
+ * 📌 API Lấy danh sách tất cả sự kiện
  */
-router.get("/", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const events = await Event.findAll({ include: [User, Hall, Menu] });
-    res.json(events);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+router.get("/", async (req, res) => {
+    try {
+        const events = await eventService.getAllEvents();
+        res.status(200).json(events);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 
 /**
- * 📌 Tạo sự kiện mới (Chỉ user đã đăng nhập)
+ * 📌 API Lấy chi tiết 1 sự kiện
+ */
+router.get("/:id", async (req, res) => {
+    try {
+        const event = await eventService.getEventById(req.params.id);
+        res.status(200).json(event);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+});
+
+/**
+ * 📌 API Tạo sự kiện mới
  */
 router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const { userId, eventDate, startTime, endTime, hallId, menuId, numberOfTables,numberOfGuests, totalPrice} = req.body;
-
-    // Kiểm tra userId có khớp với user đang đăng nhập không
-    if (req.user.role !== "admin" && req.user.id !== userId) {
-      return res.status(403).json({ error: "Bạn không có quyền đặt sự kiện cho người khác" });
+    try {
+        const newEvent = await eventService.createEvent(req.body);
+        res.status(201).json(newEvent);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
-
-    // Kiểm tra User, Hall, Menu có tồn tại không
-    const user = await User.findByPk(userId);
-    const hall = await Hall.findByPk(hallId);
-    const menu = await Menu.findByPk(menuId);
-
-    if (!user || !hall || !menu) {
-      return res.status(404).json({ error: "User, Hall hoặc Menu không tồn tại" });
-    }
-
-    // Kiểm tra số lượng khách hợp lệ
-    if (!numberOfGuests || numberOfGuests <= 0) {
-      return res.status(400).json({ error: "Số khách phải lớn hơn 0" });
-    }
-
-    // Kiểm tra thời gian hợp lệ
-    if (new Date(startTime) >= new Date(endTime)) {
-      return res.status(400).json({ error: "Thời gian bắt đầu phải trước thời gian kết thúc" });
-    }
-
-    // Tính tổng tiền: giá sảnh + (giá menu * số khách)
-    //const totalPrice = hall.price + menu.price * numberOfGuests;
-    //console.log(hall.price, menu.price);
-    
-
-    // Tạo sự kiện
-    const event = await Event.create({
-      userId,
-      eventDate,
-      startTime,
-      endTime,
-      hallId,
-      menuId,
-      numberOfTables, 
-      numberOfGuests,
-      totalPrice,
-      status: "pending", // Mặc định trạng thái là "pending"
-    });
-
-    res.status(201).json({ message: "Tạo sự kiện thành công!", event });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
 });
 
 /**
- * 📌 Cập nhật trạng thái sự kiện (Chỉ Admin)
+ * 📌 API Cập nhật sự kiện
  */
-router.put("/:id/status", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const { status } = req.body;
-
-    // Kiểm tra trạng thái hợp lệ
-    if (!["pending", "confirmed", "cancelled"].includes(status)) {
-      return res.status(400).json({ error: "Trạng thái không hợp lệ" });
+router.put("/:id", authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const event = await eventService.updateEvent(req.params.id, req.body);
+        res.status(200).json(event);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
-
-    const event = await Event.findByPk(req.params.id);
-    if (!event) return res.status(404).json({ error: "Sự kiện không tồn tại" });
-
-    await event.update({ status });
-    res.json({ message: "Cập nhật trạng thái sự kiện thành công", event });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
 });
 
 /**
- * 📌 Xóa sự kiện (Chỉ Admin)
+ * 📌 API Xóa sự kiện
  */
 router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const event = await Event.findByPk(req.params.id);
-    if (!event) return res.status(404).json({ error: "Sự kiện không tồn tại" });
+    try {
+        await eventService.deleteEvent(req.params.id);
+        res.status(200).json({ message: "Đã xóa sự kiện thành công!" });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
 
-    await event.destroy();
-    res.json({ message: "Xóa sự kiện thành công" });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+/**
+ * 📌 API Lấy sự kiện theo trạng thái
+ */
+router.get("/status/:status", async (req, res) => {
+    try {
+        const events = await eventService.getEventsByStatus(req.params.status);
+        res.status(200).json(events);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+/**
+ * 📌 API Lấy sự kiện theo khoảng thời gian
+ */
+router.get("/date-range", async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+        
+        // Validate input dates
+        if (!startDate || !endDate) {
+            return res.status(400).json({ message: "Vui lòng cung cấp cả startDate và endDate" });
+        }
+
+        // Convert string dates to Date objects
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        // Validate date format
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+            return res.status(400).json({ message: "Định dạng ngày không hợp lệ" });
+        }
+
+        // Validate date range
+        if (start > end) {
+            return res.status(400).json({ message: "startDate phải nhỏ hơn hoặc bằng endDate" });
+        }
+
+        const events = await eventService.getEventsByDateRange(start, end);
+        res.status(200).json(events);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+/**
+ * 📌 API Kiểm tra sảnh có sẵn cho sự kiện
+ */
+router.post("/check-hall-availability", async (req, res) => {
+    try {
+        const { hallId, startTime, endTime } = req.body;
+        const isAvailable = await eventService.checkHallAvailability(
+            hallId,
+            startTime,
+            endTime
+        );
+        res.status(200).json({ isAvailable });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 });
 
 module.exports = router;

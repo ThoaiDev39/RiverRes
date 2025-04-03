@@ -15,7 +15,7 @@ const eventRoutes = require("./routes/eventRoutes");
 const sequelize = require('./config/db'); // Kết nối database
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8081;
 const hostname = process.env.HOST_NAME || 'localhost';
 
 // ✅ Middleware xử lý JSON
@@ -30,11 +30,11 @@ configViewEngine(app);
 // ✅ Định nghĩa routes
 app.use('/', webRoutes);
 app.use('/auth', authRoutes); // API đăng nhập & đăng ký
-app.use('/api', userRoutes); // Định nghĩa API khách hàng
 app.use("/api/menu", menuRoutes);
 app.use("/api/dishes", dishRoutes);
 app.use("/api/hall", hallRoutes);
 app.use("/api/event", eventRoutes);
+app.use('/api', userRoutes); // Đặt route chung xuống cuối
 
 // ✅ Kết nối database & khởi động server
 sequelize.authenticate()

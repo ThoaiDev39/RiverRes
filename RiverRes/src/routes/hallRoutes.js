@@ -1,100 +1,96 @@
 const express = require("express");
-const Hall = require("../models/hall");
-const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware, adminMiddleware } = require("../middleware/authMiddleware");
+const hallService = require("../services/HallService");
 
 const router = express.Router();
 
 /**
- * 📌 API Lấy danh sách tất cả sảnh tiệc
+ * 📌 API Lấy danh sách tất cả sảnh
+ * 🔓 Không yêu cầu xác thực - cho phép người dùng chưa đăng nhập cũng có thể xem
  */
 router.get("/", async (req, res) => {
     try {
-        const halls = await Hall.findAll();
+        const halls = await hallService.getAllHalls();
         res.status(200).json(halls);
     } catch (error) {
-        console.error("Lỗi lấy danh sách sảnh:", error);
-        res.status(500).json({ message: "Lỗi máy chủ!" });
+        res.status(500).json({ message: error.message });
     }
 });
 
 /**
- * 📌 API Lấy thông tin sảnh theo ID
+ * 📌 API Lấy chi tiết 1 sảnh
  */
 router.get("/:id", async (req, res) => {
     try {
-        const hall = await Hall.findByPk(req.params.id);
-        if (!hall) return res.status(404).json({ message: "Sảnh không tồn tại!" });
-
+        const hall = await hallService.getHallById(req.params.id);
         res.status(200).json(hall);
     } catch (error) {
-        console.error("Lỗi lấy sảnh theo ID:", error);
-        res.status(500).json({ message: "Lỗi máy chủ!" });
+        res.status(404).json({ message: error.message });
     }
 });
 
 /**
- * 📌 API Thêm sảnh mới (Chỉ Admin)
+ * 📌 API Tạo sảnh mới
  */
 router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const { name, capacity, price, image, description } = req.body;
-
-        // Kiểm tra dữ liệu hợp lệ
-        if (!name || !capacity || !price) {
-            return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin!" });
-        }
-        if (isNaN(capacity) || isNaN(price) || capacity <= 0 || price <= 0) {
-            return res.status(400).json({ message: "Capacity và price phải là số lớn hơn 0!" });
-        }
-
-        const newHall = await Hall.create({ name, capacity, price, image, description });
-
-        res.status(201).json({ message: "Thêm sảnh thành công!", hall: newHall });
+        const newHall = await hallService.createHall(req.body);
+        res.status(201).json(newHall);
     } catch (error) {
-        console.error("Lỗi thêm sảnh:", error);
-        res.status(500).json({ message: "Lỗi máy chủ!" });
+        res.status(400).json({ message: error.message });
     }
 });
 
 /**
- * 📌 API Cập nhật thông tin sảnh (Chỉ Admin)
+ * 📌 API Cập nhật sảnh
  */
 router.put("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const { id } = req.params;
-        const { name, capacity, price, image, description } = req.body;
-
-        const hall = await Hall.findByPk(id);
-        if (!hall) return res.status(404).json({ message: "Sảnh không tồn tại!" });
-
-        await hall.update({
-            name: name || hall.name,
-            capacity: isNaN(capacity) ? hall.capacity : capacity,
-            price: isNaN(price) ? hall.price : price,
-            image: image || hall.image,
-            description: description || hall.description,
-        });
-
-        res.status(200).json({ message: "Cập nhật sảnh thành công!", hall });
+        const hall = await hallService.updateHall(req.params.id, req.body);
+        res.status(200).json(hall);
     } catch (error) {
-        console.error("Lỗi cập nhật sảnh:", error);
-        res.status(500).json({ message: "Lỗi máy chủ!" });
+        res.status(400).json({ message: error.message });
     }
 });
 
 /**
- * 📌 API Xóa sảnh (Chỉ Admin)
+ * 📌 API Xóa sảnh
  */
 router.delete("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const hall = await Hall.findByPk(req.params.id);
-        if (!hall) return res.status(404).json({ message: "Sảnh không tồn tại!" });
-
-        await hall.destroy();
-        res.status(200).json({ message: "Xóa sảnh thành công!" });
+        await hallService.deleteHall(req.params.id);
+        res.status(200).json({ message: "Đã xóa sảnh thành công!" });
     } catch (error) {
-        console.error("Lỗi xóa sảnh:", error);
-        res.status(500).json({ message: "Lỗi máy chủ!" });
+        res.status(400).json({ message: error.message });
+    }
+});
+
+/**
+ * 📌 API Lấy sảnh theo sức chứa
+ */
+router.get("/capacity/:minCapacity", async (req, res) => {
+    try {
+        const halls = await hallService.getHallsByCapacity(req.params.minCapacity);
+        res.status(200).json(halls);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+/**
+ * 📌 API Kiểm tra sảnh có sẵn
+ */
+router.post("/:id/check-availability", async (req, res) => {
+    try {
+        const { startTime, endTime } = req.body;
+        const isAvailable = await hallService.checkHallAvailability(
+            req.params.id,
+            startTime,
+            endTime
+        );
+        res.status(200).json({ isAvailable });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
 });
 
