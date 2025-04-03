@@ -8,14 +8,14 @@ const User = sequelize.define('User', {
     autoIncrement: true,
   },
   username: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(255),
     allowNull: false,
-    unique: true,
+    unique: false, // Kiểm tra xem có đặt unique không
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
+    unique: false,
     validate: {
       isEmail: true, // Ràng buộc phải là email hợp lệ
     }

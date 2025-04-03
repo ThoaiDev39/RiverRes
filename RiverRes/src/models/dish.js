@@ -7,10 +7,6 @@ const Dish = sequelize.define("Dish", {
     autoIncrement: true,
     primaryKey: true,
   },
-  menuId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -19,11 +15,11 @@ const Dish = sequelize.define("Dish", {
     type: DataTypes.TEXT,
   },
   price: {
-    type: DataTypes.FLOAT, // 🔹 Dùng FLOAT nếu không cần độ chính xác cao
+    type: DataTypes.FLOAT, 
     allowNull: false,
   },
   image: {
-    type: DataTypes.STRING, // 🔹 URL ảnh món ăn
+    type: DataTypes.STRING,
   },
 });
 
