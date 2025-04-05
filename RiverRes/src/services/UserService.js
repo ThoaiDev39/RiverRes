@@ -19,7 +19,7 @@ class UserService extends BaseService {
     async getAllUsers() {
         return await this.findAll({
             attributes: { exclude: ['password'] },
-            order: [['createdAt', 'DESC']]
+            order: [['created_at', 'DESC']]
         });
     }
 
