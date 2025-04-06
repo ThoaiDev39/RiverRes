@@ -5,6 +5,11 @@ class AuthService {
     // Đăng ký tài khoản mới
     async register(userData) {
         try {
+            // Nếu không có role, mặc định là user
+            if (!userData.role) {
+                userData.role = 'user';
+            }
+
             // Tạo user mới
             const user = await userService.createUser(userData);
             

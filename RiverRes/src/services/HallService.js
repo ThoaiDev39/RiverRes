@@ -1,6 +1,8 @@
 const { Op } = require("sequelize");
 const BaseService = require("./BaseService");
 const Hall = require("../models/hall");
+const TimeSlot = require("../models/timeSlot");
+const Event = require("../models/event");
 
 class HallService extends BaseService {
     constructor() {
@@ -71,6 +73,42 @@ class HallService extends BaseService {
         const hall = await this.getHallById(hallId);
         // TODO: Implement availability check logic
         return true;
+    }
+
+    // Kiểm tra sảnh còn trống các time slot nào vào một ngày cụ thể
+    async getAvailableTimeSlots(hallId, date) {
+        // Kiểm tra sảnh có tồn tại không
+        const hall = await this.getHallById(hallId);
+        if (!hall) {
+            throw new Error('Sảnh không tồn tại');
+        }
+
+        // Lấy tất cả các time slot
+        const allTimeSlots = await TimeSlot.findAll();
+
+        // Lấy các sự kiện đã đặt cho sảnh vào ngày đó
+        const bookedEvents = await Event.findAll({
+            where: {
+                hallId,
+                eventDate: date,
+                status: {
+                    [Op.notIn]: ['cancelled'] // Không tính các sự kiện đã hủy
+                }
+            },
+            attributes: ['timeSlotId']
+        });
+
+        // Lấy danh sách các timeSlotId đã đặt
+        const bookedTimeSlotIds = bookedEvents.map(event => event.timeSlotId);
+
+        // Lọc ra các time slot còn trống
+        const availableTimeSlots = allTimeSlots.filter(slot => !bookedTimeSlotIds.includes(slot.id));
+
+        return {
+            hallId,
+            date,
+            availableTimeSlots
+        };
     }
 }
 

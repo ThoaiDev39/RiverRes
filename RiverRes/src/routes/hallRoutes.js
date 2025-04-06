@@ -94,4 +94,23 @@ router.post("/:id/check-availability", async (req, res) => {
     }
 });
 
+/**
+ * 📌 API Kiểm tra sảnh còn trống các time slot nào vào một ngày cụ thể
+ * 🔓 Không yêu cầu xác thực
+ */
+router.get("/:id/available-time-slots", async (req, res) => {
+    try {
+        const { date } = req.query;
+        
+        if (!date) {
+            return res.status(400).json({ message: "Vui lòng cung cấp ngày cần kiểm tra" });
+        }
+        
+        const result = await hallService.getAvailableTimeSlots(req.params.id, date);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
 module.exports = router;

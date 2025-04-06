@@ -45,8 +45,8 @@ router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
  */
 router.put("/:id", authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const event = await eventService.updateEvent(req.params.id, req.body);
-        res.status(200).json(event);
+        const updatedEvent = await eventService.updateEvent(req.params.id, req.body);
+        res.status(200).json(updatedEvent);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -83,29 +83,15 @@ router.get("/date-range", async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
         
-        // Validate input dates
+        // Validate input
         if (!startDate || !endDate) {
-            return res.status(400).json({ message: "Vui lòng cung cấp cả startDate và endDate" });
+            return res.status(400).json({ message: 'Vui lòng cung cấp ngày bắt đầu và ngày kết thúc' });
         }
 
-        // Convert string dates to Date objects
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        // Validate date format
-        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-            return res.status(400).json({ message: "Định dạng ngày không hợp lệ" });
-        }
-
-        // Validate date range
-        if (start > end) {
-            return res.status(400).json({ message: "startDate phải nhỏ hơn hoặc bằng endDate" });
-        }
-
-        const events = await eventService.getEventsByDateRange(start, end);
+        const events = await eventService.getEventsByDateRange(startDate, endDate);
         res.status(200).json(events);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
 });
 
@@ -114,12 +100,14 @@ router.get("/date-range", async (req, res) => {
  */
 router.post("/check-hall-availability", async (req, res) => {
     try {
-        const { hallId, startTime, endTime } = req.body;
-        const isAvailable = await eventService.checkHallAvailability(
-            hallId,
-            startTime,
-            endTime
-        );
+        const { hallId, eventDate, timeSlotId } = req.body;
+        
+        // Validate input
+        if (!hallId || !eventDate || !timeSlotId) {
+            return res.status(400).json({ message: 'Vui lòng cung cấp đầy đủ thông tin: hallId, eventDate, timeSlotId' });
+        }
+
+        const isAvailable = await eventService.checkHallAvailability(hallId, eventDate, timeSlotId);
         res.status(200).json({ isAvailable });
     } catch (error) {
         res.status(400).json({ message: error.message });

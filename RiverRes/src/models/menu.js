@@ -19,6 +19,10 @@ const Menu = sequelize.define("Menu", {
     allowNull: false,
     defaultValue: 0,
   },
+  image: {  // Added image field
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = Menu;
