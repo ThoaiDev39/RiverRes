@@ -3,6 +3,7 @@ const sequelize = require("../config/db");
 const Hall = require("./hall");
 const Menu = require("./menu");
 const User = require("./Users");
+const TimeSlot = require("./timeSlot");
 
 const Event = sequelize.define("Event", {
   id: {
@@ -26,6 +27,14 @@ const Event = sequelize.define("Event", {
       key: "id",
     },
   },
+  timeSlotId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: TimeSlot,
+      key: "id",
+    },
+  },
   menuId: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -38,24 +47,16 @@ const Event = sequelize.define("Event", {
     type: DataTypes.DATEONLY,
     allowNull: false,
   },
-  startTime: {
-    type: DataTypes.TIME,
-    allowNull: false,
-  },
-  endTime: {
-    type: DataTypes.TIME,
-    allowNull: false,
-  },
   numberOfTables: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
   status: {
-    type: DataTypes.ENUM("pending", "confirmed", "paid"),
+    type: DataTypes.ENUM("pending", "confirmed", "paid", "cancelled"),
     defaultValue: "pending",
   },
   totalPrice: {
-    type: DataTypes.DECIMAL(10, 2), // 🔹 Dùng DECIMAL thay vì FLOAT
+    type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
     defaultValue: 0,
   },
@@ -67,6 +68,9 @@ Event.belongsTo(User, { foreignKey: "userId" });
 
 Hall.hasMany(Event, { foreignKey: "hallId", onDelete: "CASCADE" });
 Event.belongsTo(Hall, { foreignKey: "hallId" });
+
+TimeSlot.hasMany(Event, { foreignKey: "timeSlotId" });
+Event.belongsTo(TimeSlot, { foreignKey: "timeSlotId" });
 
 Menu.hasMany(Event, { foreignKey: "menuId", onDelete: "CASCADE" });
 Event.belongsTo(Menu, { foreignKey: "menuId" });
