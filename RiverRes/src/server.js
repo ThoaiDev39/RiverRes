@@ -14,6 +14,7 @@ const eventRoutes = require("./routes/eventRoutes");
 
 const sequelize = require('./config/db'); // Kết nối database
 const TimeSlot = require('./models/timeSlot'); // Import model TimeSlot
+const Image = require('./models/Image'); // Import model Image
 
 const app = express();
 const port = process.env.PORT || 8081;
