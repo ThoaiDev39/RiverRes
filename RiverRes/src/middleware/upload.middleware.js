@@ -23,7 +23,9 @@ createUploadDirs();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const entityType = req.params.entityType || 'halls';
+        // Lấy entityType từ URL path
+        const urlParts = req.originalUrl.split('/');
+        const entityType = urlParts.includes('dishes') ? 'dishes' : 'halls';
         const uploadPath = path.join(__dirname, `../publics/uploads/${entityType}`);
         cb(null, uploadPath);
     },

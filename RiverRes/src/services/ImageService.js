@@ -5,8 +5,11 @@ const { Op } = require('sequelize');
 
 class ImageService {
     static async saveImage(file, entityType, entityId) {
+        // Chuyển đổi entityType để phù hợp với database
+        const dbEntityType = entityType === 'dishes' ? 'dish' : 'hall';
+        
         const imageData = {
-            entityType,
+            entityType: dbEntityType,
             entityId,
             fileName: file.filename,
             originalName: file.originalname,
@@ -19,9 +22,12 @@ class ImageService {
     }
 
     static async getImages(entityType, entityId) {
+        // Chuyển đổi entityType để phù hợp với database
+        const dbEntityType = entityType === 'dishes' ? 'dish' : 'hall';
+        
         return await Image.findAll({
             where: {
-                entityType,
+                entityType: dbEntityType,
                 entityId
             },
             order: [
@@ -49,12 +55,15 @@ class ImageService {
     }
 
     static async setPrimaryImage(imageId, entityType, entityId) {
+        // Chuyển đổi entityType để phù hợp với database
+        const dbEntityType = entityType === 'dishes' ? 'dish' : 'hall';
+        
         // Reset tất cả ảnh của entity này thành không phải primary
         await Image.update(
             { isPrimary: false },
             {
                 where: {
-                    entityType,
+                    entityType: dbEntityType,
                     entityId
                 }
             }

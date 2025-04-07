@@ -12,8 +12,8 @@ class DishService extends BaseService {
         name: { required: true, minLength: 3, maxLength: 100 },
         description: { required: true, minLength: 10, maxLength: 500 },
         price: { required: true },
-        category: { required: true },
-        image: { required: true }
+        category: { required: false },
+        image: { required: false }
     };
 
     // Lấy tất cả món ăn
