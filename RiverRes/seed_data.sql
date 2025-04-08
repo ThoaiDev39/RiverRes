@@ -15,56 +15,61 @@ INSERT INTO Users (username, email, password, role, birth, gender, phone, addres
 
 -- Insert Halls (4 halls)
 INSERT INTO Halls (name, capacity, price, image, description, createdAt, updatedAt) VALUES
-('Grand Ballroom', 200, 5000000, 'grand_ballroom.jpg', 'Luxurious ballroom perfect for large weddings and corporate events', NOW(), NOW()),
-('Garden Hall', 100, 3000000, 'garden_hall.jpg', 'Beautiful garden view hall for intimate gatherings', NOW(), NOW()),
-('River View Hall', 150, 4000000, 'river_view_hall.jpg', 'Stunning river view hall with modern amenities', NOW(), NOW()),
-('VIP Hall', 50, 2000000, 'vip_hall.jpg', 'Exclusive VIP hall for premium events', NOW(), NOW());
+('Paradise Hall', 200, 5000000, 'grand_ballroom.jpg', 'Sảnh tiệc sang trọng hoàn hảo cho các đám cưới lớn và sự kiện doanh nghiệp', NOW(), NOW()),
+('Bliss Hall', 100, 3000000, 'garden_hall.jpg', 'Sảnh với tầm nhìn ra vườn đẹp cho các buổi họp mặt thân mật', NOW(), NOW()),
+('SPearl Hall', 150, 4000000, 'river_view_hall.jpg', 'Sảnh với tầm nhìn ra sông tuyệt đẹp và tiện nghi hiện đại', NOW(), NOW()),
+('Sunrise Hall', 50, 2000000, 'vip_hall.jpg', 'Sảnh VIP độc quyền cho các sự kiện cao cấp', NOW(), NOW());
 
 -- Insert TimeSlots
 INSERT INTO TimeSlots (name, startTime, endTime, description, createdAt, updatedAt) VALUES
-('Morning', '08:00:00', '12:00:00', 'Morning event slot', NOW(), NOW()),
-('Afternoon', '13:00:00', '17:00:00', 'Afternoon event slot', NOW(), NOW()),
-('Evening', '18:00:00', '22:00:00', 'Evening event slot', NOW(), NOW()),
-('Night', '19:00:00', '23:00:00', 'Night event slot', NOW(), NOW());
+('Buổi sáng', '08:00:00', '12:00:00', 'Khung giờ sự kiện buổi sáng', NOW(), NOW()),
+('Buổi chiều', '13:00:00', '17:00:00', 'Khung giờ sự kiện buổi chiều', NOW(), NOW()),
+('Buổi tối', '18:00:00', '22:00:00', 'Khung giờ sự kiện buổi tối', NOW(), NOW()),
+('Đêm', '19:00:00', '23:00:00', 'Khung giờ sự kiện đêm', NOW(), NOW());
 
 -- Insert Menus (4 menus)
 INSERT INTO Menus (name, description, totalPrice, image, createdAt, updatedAt) VALUES
-('Premium Menu', 'Luxury dining experience with premium dishes', 1500000, 'premium_menu.jpg', NOW(), NOW()),
-('Standard Menu', 'Classic dishes for traditional events', 1000000, 'standard_menu.jpg', NOW(), NOW()),
-('Budget Menu', 'Affordable yet delicious options', 800000, 'budget_menu.jpg', NOW(), NOW()),
-('Vegetarian Menu', 'Healthy and delicious vegetarian options', 1200000, 'vegetarian_menu.jpg', NOW(), NOW());
+('Thực đơn cao cấp', 'Trải nghiệm ẩm thực sang trọng với các món ăn cao cấp', 1500000, 'premium_menu.jpg', NOW(), NOW()),
+('Thực đơn tiêu chuẩn', 'Các món ăn cổ điển cho các sự kiện truyền thống', 1000000, 'standard_menu.jpg', NOW(), NOW()),
+('Thực đơn tiết kiệm', 'Các lựa chọn ngon miệng nhưng giá cả phải chăng', 800000, 'budget_menu.jpg', NOW(), NOW()),
+('Thực đơn chay', 'Các lựa chọn chay lành mạnh và ngon miệng', 1200000, 'vegetarian_menu.jpg', NOW(), NOW());
 
 -- Insert MenuItems for each menu
 -- Premium Menu Items
 -- Insert Dishes
 INSERT INTO Dishes (name, description, price, image, createdAt, updatedAt) VALUES
-('Lobster Thermidor', 'Classic French lobster dish', 500000, 'lobster_thermidor.jpg', NOW(), NOW()),
-('Wagyu Beef Steak', 'Premium Japanese beef', 800000, 'wagyu_beef.jpg', NOW(), NOW()),
-('Truffle Risotto', 'Creamy risotto with black truffle', 300000, 'truffle_risotto.jpg', NOW(), NOW()),
-('Grilled Salmon', 'Fresh Atlantic salmon', 300000, 'grilled_salmon.jpg', NOW(), NOW()),
-('Beef Tenderloin', 'Classic beef tenderloin', 400000, 'beef_tenderloin.jpg', NOW(), NOW()),
-('Chicken Alfredo', 'Creamy pasta with chicken', 200000, 'chicken_alfredo.jpg', NOW(), NOW()),
-('Spaghetti Bolognese', 'Classic Italian pasta', 150000, 'spaghetti_bolognese.jpg', NOW(), NOW()),
-('Grilled Chicken', 'Herb-marinated chicken', 200000, 'grilled_chicken.jpg', NOW(), NOW()),
-('Vegetable Stir Fry', 'Fresh mixed vegetables', 100000, 'vegetable_stir_fry.jpg', NOW(), NOW()),
-('Mushroom Risotto', 'Creamy mushroom risotto', 250000, 'mushroom_risotto.jpg', NOW(), NOW()),
-('Vegetable Curry', 'Spicy vegetable curry', 200000, 'vegetable_curry.jpg', NOW(), NOW()),
-('Quinoa Bowl', 'Healthy quinoa with vegetables', 180000, 'quinoa_bowl.jpg', NOW(), NOW());
+('Tôm hùm Thermidor', 'Món tôm hùm Pháp cổ điển', 500000, 'lobster_thermidor.jpg', NOW(), NOW()),
+('Bít tết Wagyu', 'Thịt bò Nhật Bản cao cấp', 800000, 'wagyu_beef.jpg', NOW(), NOW()),
+('Risotto nấm truffle', 'Risotto kem với nấm truffle đen', 300000, 'truffle_risotto.jpg', NOW(), NOW()),
+('Cá hồi nướng', 'Cá hồi Đại Tây Dương tươi ngon', 300000, 'grilled_salmon.jpg', NOW(), NOW()),
+('Thịt bò tenderloin', 'Thịt bò tenderloin cổ điển', 400000, 'beef_tenderloin.jpg', NOW(), NOW()),
+('Mì Ý Alfredo gà', 'Mì kem với gà', 200000, 'chicken_alfredo.jpg', NOW(), NOW()),
+('Mì Ý Bolognese', 'Mì Ý cổ điển', 150000, 'spaghetti_bolognese.jpg', NOW(), NOW()),
+('Gà nướng', 'Gà ướp thảo mộc', 200000, 'grilled_chicken.jpg', NOW(), NOW()),
+('Rau xào', 'Rau củ tươi ngon', 100000, 'vegetable_stir_fry.jpg', NOW(), NOW()),
+('Risotto nấm', 'Risotto nấm kem', 250000, 'mushroom_risotto.jpg', NOW(), NOW()),
+('Cà ri rau', 'Cà ri rau cay', 200000, 'vegetable_curry.jpg', NOW(), NOW()),
+('Bát quinoa', 'Quinoa lành mạnh với rau củ', 180000, 'quinoa_bowl.jpg', NOW(), NOW());
 
 -- Insert MenuDish relationships
 INSERT INTO MenuDishes (menuId, dishId, quantity) VALUES
-(1, 1, 1),  -- Lobster Thermidor
-(1, 2, 1),  -- Wagyu Beef Steak
-(1, 3, 1),  -- Truffle Risotto
+(1, 1, 1),  -- Tôm hùm Thermidor
+(1, 2, 1),  -- Bít tết Wagyu
+(1, 3, 1),  -- Risotto nấm truffle
 
-(2, 4, 1),  -- Grilled Salmon
-(2, 5, 1),  -- Beef Tenderloin
-(2, 6, 1),  -- Chicken Alfredo
+(2, 4, 1),  -- Cá hồi nướng
+(2, 5, 1),  -- Thịt bò tenderloin
+(2, 6, 1),  -- Mì Ý Alfredo gà
 
-(3, 7, 1),  -- Spaghetti Bolognese
-(3, 8, 1),  -- Grilled Chicken
-(3, 9, 1),  -- Vegetable Stir Fry
+(3, 7, 1),  -- Mì Ý Bolognese
+(3, 8, 1),  -- Gà nướng
+(3, 9, 1),  -- Rau xào
 
-(4, 10, 1), -- Mushroom Risotto
-(4, 11, 1), -- Vegetable Curry
-(4, 12, 1); -- Quinoa Bowl
+(4, 10, 1), -- Risotto nấm
+(4, 11, 1), -- Cà ri rau
+(4, 12, 1); -- Bát quinoa
+
+// Vào trang đăng ký tạo tài khoản có email như sau email = 'admin123@gmail.com'
+// sau đó chạy sql tron mysql
+UPDATE Users SET role = 'admin' WHERE email = 'admin123@gmail.com';
+// Vào lại trang , mở F12, phần app -> local storage -> localhost:5173 -> xóa token > F5 và đăng nhập lại
