@@ -7,14 +7,7 @@
     "start": "node RiverRes/src/server.js",
     "dev": "nodemon RiverRes/src/server.js"
   },
-  "keywords": [
-    "node",
-    "js",
-    "+",
-    "react",
-    "+",
-    "mysql"
-  ],
+  "keywords": ["node","js","+","react","+","mysql"],
   "author": "thoaidev36",
   "license": "ISC",
   "description": "",

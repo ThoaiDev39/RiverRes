@@ -1,44 +1,34 @@
 require('dotenv').config();
-
 const express = require('express');
 const cors = require('cors');
 const configViewEngine = require('./config/viewEngine');
-
-const webRoutes = require('./routes/web');
-const authRoutes = require('./routes/Auth'); // Import API routes
+const authRoutes = require('./routes/Auth'); 
 const userRoutes = require('./routes/userRouter');
 const menuRoutes = require("./routes/menuRoutes");
 const dishRoutes = require("./routes/dishRoutes");
 const hallRoutes = require("./routes/hallRoutes");
 const eventRoutes = require("./routes/eventRoutes");
-
-const sequelize = require('./config/db'); // Kết nối database
-const TimeSlot = require('./models/timeSlot'); // Import model TimeSlot
-const Image = require('./models/Image'); // Import model Image
-
+const sequelize = require('./config/db'); 
+const TimeSlot = require('./models/timeSlot'); 
+const Image = require('./models/Image'); 
 const app = express();
 const port = process.env.PORT || 8081;
 const hostname = process.env.HOST_NAME || 'localhost';
 
-// ✅ Middleware xử lý JSON
 app.use(express.json());
-
-// ✅ Cấu hình CORS (nếu frontend gọi API từ domain khác)
 app.use(cors());
-
-// ✅ Cấu hình template engine (nếu có)
 configViewEngine(app);
 
-// ✅ Định nghĩa routes
+// Định nghĩa routes
 app.use('/', webRoutes);
-app.use('/auth', authRoutes); // API đăng nhập & đăng ký
+app.use('/auth', authRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/dishes", dishRoutes);
 app.use("/api/hall", hallRoutes);
 app.use("/api/event", eventRoutes);
-app.use('/api', userRoutes); // Đặt route chung xuống cuối
+app.use('/api', userRoutes); 
 
-// ✅ Hàm kiểm tra và tạo TimeSlots mặc định
+// Hàm kiểm tra và tạo TimeSlots mặc định
 async function checkAndCreateTimeSlots() {
   try {
     // Kiểm tra xem đã có TimeSlot nào chưa
@@ -79,7 +69,7 @@ async function checkAndCreateTimeSlots() {
   }
 }
 
-// ✅ Kết nối database & khởi động server
+// Kết nối database & khởi động server
 sequelize.authenticate()
   .then(() => {
     console.log('✅ Kết nối MySQL thành công với Sequelize!');
@@ -98,7 +88,7 @@ sequelize.authenticate()
     console.error('❌ Lỗi kết nối database:', err);
   });
 
-// ✅ Middleware xử lý lỗi chung
+// Middleware xử lý lỗi chung
 app.use((err, req, res, next) => {
   console.error('💥 Lỗi hệ thống:', err);
   res.status(500).json({ message: 'Đã xảy ra lỗi máy chủ!' });
