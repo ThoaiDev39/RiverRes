@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 /**
  * 📌 API Lấy chi tiết 1 sự kiện
  */
-router.get("/:id", async (req, res) => {
+router.get("/:id", authMiddleware, async (req, res) => {
     try {
         const event = await eventService.getEventById(req.params.id);
         res.status(200).json(event);
@@ -31,7 +31,7 @@ router.get("/:id", async (req, res) => {
 /**
  * 📌 API Tạo sự kiện mới
  */
-router.post("/", authMiddleware, adminMiddleware, async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
     try {
         const newEvent = await eventService.createEvent(req.body);
         res.status(201).json(newEvent);
@@ -109,6 +109,36 @@ router.post("/check-hall-availability", async (req, res) => {
 
         const isAvailable = await eventService.checkHallAvailability(hallId, eventDate, timeSlotId);
         res.status(200).json({ isAvailable });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+/**
+ * 📌 API Cập nhật trạng thái sự kiện
+ */
+router.patch("/:id/status", authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const { status } = req.body;
+        const updatedEvent = await eventService.updateEventStatus(req.params.id, status);
+        res.status(200).json(updatedEvent);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+/**
+ * 📌 API Lấy sự kiện theo ID người dùng
+ */
+router.get("/user/:userId",  async (req, res) => {
+    try {
+        // Kiểm tra quyền truy cập
+        // if (req.user.role !== "admin" && req.user.id !== parseInt(req.params.userId)) {
+        //     return res.status(403).json({ message: "Bạn không có quyền truy cập thông tin này" });
+        // }
+
+        const events = await eventService.getEventsByUserId(req.params.userId);
+        res.status(200).json(events);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

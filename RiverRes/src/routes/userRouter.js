@@ -22,14 +22,15 @@ router.get('/users', authMiddleware, adminMiddleware, async (req, res) => {
 /**
  * 📌 API Lấy thông tin user theo ID
  */
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/users/:id', authMiddleware, async (req, res) => {
     try {
         // Kiểm tra quyền truy cập
-        if (req.user.role !== "admin" && req.user.userId !== parseInt(req.params.id)) {
-            return res.status(403).json({ message: "Bạn không có quyền truy cập thông tin này" });
-        }
+        // if (req.user.role !== "admin" && req.user.id !== parseInt(req.params.id)) {
+        //     return res.status(403).json({ message: "Bạn không có quyền truy cập thông tin này" });
+        // }
 
         const user = await userService.getUserById(req.params.id);
+        console.log(req.params.id)
         res.status(200).json(user);
     } catch (error) {
         res.status(404).json({ message: error.message });

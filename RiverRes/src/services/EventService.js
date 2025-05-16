@@ -11,12 +11,14 @@ class EventService extends BaseService {
 
     // Validation rules cho event
     eventRules = {
+        eventName: { required: true },
         userId: { required: true },
         hallId: { required: true },
         timeSlotId: { required: true },
         menuId: { required: true },
         eventDate: { required: true },
-        numberOfTables: { required: true }
+        numberOfTables: { required: true },
+        numberOfGuests: { required: true }
     };
 
     // Lấy tất cả sự kiện
@@ -185,6 +187,45 @@ class EventService extends BaseService {
 
         // Nếu không có sự kiện nào xung đột, sảnh có sẵn
         return conflictingEvents.length === 0;
+    }
+
+    // Cập nhật trạng thái sự kiện
+    async updateEventStatus(id, status) {
+        const event = await this.findById(id);
+        if (!event) {
+            throw new Error('Sự kiện không tồn tại');
+        }
+
+        // Validate status
+        const validStatuses = ["pending", "confirmed", "paid", "done", "cancelled"];
+        if (!validStatuses.includes(status)) {
+            throw new Error('Trạng thái không hợp lệ');
+        }
+
+        // Cập nhật status
+        event.status = status;
+        await event.save();
+
+        // Trả về thông tin sự kiện đã cập nhật
+        return await this.getEventById(id);
+    }
+
+    // Lấy sự kiện theo ID người dùng
+    async getEventsByUserId(userId) {
+        return await this.findAll({
+            where: { userId },
+            include: [
+                {
+                    model: Hall,
+                    attributes: ['name', 'capacity']
+                },
+                {
+                    model: TimeSlot,
+                    attributes: ['name', 'startTime', 'endTime']
+                }
+            ],
+            order: [['eventDate', 'DESC']]
+        });
     }
 }
 

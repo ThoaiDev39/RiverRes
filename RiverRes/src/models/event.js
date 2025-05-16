@@ -11,6 +11,10 @@ const Event = sequelize.define("Event", {
     autoIncrement: true,
     primaryKey: true,
   },
+  eventName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -51,8 +55,12 @@ const Event = sequelize.define("Event", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  numberOfGuests: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   status: {
-    type: DataTypes.ENUM("pending", "confirmed", "paid", "cancelled"),
+    type: DataTypes.ENUM("pending", "confirmed", "paid", "done", "cancelled"),
     defaultValue: "pending",
   },
   totalPrice: {

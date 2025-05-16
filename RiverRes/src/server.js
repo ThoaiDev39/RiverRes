@@ -20,7 +20,7 @@ app.use(cors());
 configViewEngine(app);
 
 // Định nghĩa routes
-app.use('/', webRoutes);
+// app.use('/', webRoutes);
 app.use('/auth', authRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/dishes", dishRoutes);
@@ -80,7 +80,7 @@ sequelize.authenticate()
     return checkAndCreateTimeSlots();
   })
   .then(() => {
-    app.listen(port, hostname, () => {
+    app.listen(8081, '0.0.0.0', () => {
       console.log(`🚀 Server đang chạy tại http://${hostname}:${port}`);
     });
   })
