@@ -1,7 +1,5 @@
-// Hoàng Hà
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
-const Menu = require("./menu");
 
 const Dish = sequelize.define("Dish", {
   id: {
@@ -17,16 +15,12 @@ const Dish = sequelize.define("Dish", {
     type: DataTypes.TEXT,
   },
   price: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.FLOAT, 
     allowNull: false,
   },
   image: {
-    type: DataTypes.STRING, // URL ảnh món ăn
+    type: DataTypes.STRING,
   },
 });
-
-// Thiết lập quan hệ: 1 Menu có nhiều Dish
-Menu.hasMany(Dish, { foreignKey: "menuId", onDelete: "CASCADE" });
-Dish.belongsTo(Menu, { foreignKey: "menuId" });
 
 module.exports = Dish;

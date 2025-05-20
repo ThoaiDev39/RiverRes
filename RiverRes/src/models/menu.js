@@ -1,4 +1,3 @@
-// Hoàng Hà
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 
@@ -14,6 +13,15 @@ const Menu = sequelize.define("Menu", {
   },
   description: {
     type: DataTypes.TEXT,
+  },
+  totalPrice: {  // 🔹 Không cần tính tổng tự động nữa, có thể tính bằng query
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0,
+  },
+  image: {  // Added image field
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 });
 

@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
 const User = require('../models/Users');
+const userService = require("../services/UserService");
 
 const router = express.Router();
 
@@ -11,41 +12,77 @@ const router = express.Router();
  */
 router.get('/users', authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const users = await User.findAll({
-            attributes: ['id', 'role', 'email', 'username', 'birth', 'gender', 'phone', 'address']
-        });
-
+        const users = await userService.getAllUsers();
         res.status(200).json(users);
     } catch (error) {
-        console.error('Lỗi lấy danh sách khách hàng:', error);
-        res.status(500).json({ message: 'Lỗi máy chủ!' });
+        res.status(500).json({ message: error.message });
     }
 });
 
 /**
- * 📌 API Lấy thông tin user theo ID (Chỉ Admin)
- * 🔐 Yêu cầu xác thực & quyền Admin
+ * 📌 API Lấy thông tin user theo ID
  */
-router.get('/users/:id', authMiddleware, adminMiddleware, async (req, res) => {
+router.get('/users/:id', authMiddleware, async (req, res) => {
     try {
-        const { id } = req.params;
+        // Kiểm tra quyền truy cập
+        // if (req.user.role !== "admin" && req.user.id !== parseInt(req.params.id)) {
+        //     return res.status(403).json({ message: "Bạn không có quyền truy cập thông tin này" });
+        // }
 
-        // Tìm user theo ID
-        const user = await User.findByPk(id, {
-            attributes: ['id', 'role', 'email', 'username', 'birth', 'gender', 'phone', 'address']
-        });
-
-        if (!user) {
-            return res.status(404).json({ message: 'User không tồn tại!' });
-        }
-
-        res.status(200).json({ user });
+        const user = await userService.getUserById(req.params.id);
+        console.log(req.params.id)
+        res.status(200).json(user);
     } catch (error) {
-        console.error('Lỗi lấy user theo ID:', error);
-        res.status(500).json({ message: 'Lỗi máy chủ!' });
+        res.status(404).json({ message: error.message });
     }
 });
 
+/**
+ * 📌 API Cập nhật thông tin user
+ */
+router.put('/:id', authMiddleware, async (req, res) => {
+    try {
+        // Kiểm tra quyền truy cập
+        if (req.user.role !== "admin" && req.user.userId !== parseInt(req.params.id)) {
+            return res.status(403).json({ message: "Bạn không có quyền cập nhật thông tin này" });
+        }
+
+        const user = await userService.updateUser(req.params.id, req.body);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+/**
+ * 📌 API Xóa user
+ */
+router.delete('/:id', authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        await userService.deleteUser(req.params.id);
+        res.status(200).json({ message: "Đã xóa user thành công!" });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+/**
+ * 📌 API Đổi mật khẩu
+ */
+router.post('/:id/change-password', authMiddleware, async (req, res) => {
+    try {
+        // Kiểm tra quyền truy cập
+        if (req.user.role !== "admin" && req.user.userId !== parseInt(req.params.id)) {
+            return res.status(403).json({ message: "Bạn không có quyền đổi mật khẩu cho user này" });
+        }
+
+        const { oldPassword, newPassword } = req.body;
+        const result = await userService.changePassword(req.params.id, oldPassword, newPassword);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
 
 /**
  * 📌 API Thêm User (Chỉ Admin)

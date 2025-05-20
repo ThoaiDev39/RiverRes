@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Import kết nối DB
+const sequelize = require('../config/db'); 
 
 const User = sequelize.define('User', {
   id: {
@@ -8,16 +8,16 @@ const User = sequelize.define('User', {
     autoIncrement: true,
   },
   username: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(255),
     allowNull: false,
-    unique: true,
+    unique: false, 
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
+    unique: false,
     validate: {
-      isEmail: true, // Ràng buộc phải là email hợp lệ
+      isEmail: true, 
     }
   },
   password: {
@@ -25,11 +25,11 @@ const User = sequelize.define('User', {
     allowNull: false,
   },
   role: {
-    type: DataTypes.ENUM('user', 'admin'),  // ENUM giúp hạn chế giá trị nhập vào
+    type: DataTypes.ENUM('user', 'admin'),  
     defaultValue: 'user',
   },
   birth: {
-    type: DataTypes.DATEONLY, // Dùng DATEONLY thay vì STRING
+    type: DataTypes.DATEONLY, 
     allowNull: true,
   },
   gender: {
@@ -40,7 +40,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
-      isNumeric: true, // Đảm bảo chỉ chứa số
+      isNumeric: true, 
     },
   },
   address: {
